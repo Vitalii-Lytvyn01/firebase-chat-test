@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import './App.scss';
 import { Auth } from './components/Auth';
+import { Chat } from './components/Chat/Chat';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -8,24 +9,16 @@ const cookies = new Cookies();
 function App() {
   const [isAuth,setIsAuth] = useState(cookies.get(('auth-token')));
   const [selectedRoomId, setSelectedRoomId] = useState(null);
-  const roomId = useRef(null);
-
-  const roomInputRef = useRef(null);
-
-  function handleRoomInput(e) {
-    roomInputRef.current = e.target.value;
-  }
+  const roomInput = useRef(null);
 
   function handleRoomSelect() {
-    console.log(roomInputRef.current);
-    setSelectedRoomId(roomInputRef.current);
+    console.log(roomInput.current.value);
+    setSelectedRoomId(roomInput.current.value);
   }
 
-  if(!setIsAuth) {
+  if(!isAuth) {
     return (
-      <>
       <Auth setIsAuth={setIsAuth}/>
-      </>
     )
   }
 
@@ -37,8 +30,7 @@ function App() {
             Input room ID
           </p>
           <input
-            value={roomId.current}
-            onChange={(e) => handleRoomInput(e)}
+            ref={roomInput}
             type="text"
             name="room-input"
             id="room-input"
@@ -50,7 +42,7 @@ function App() {
             >Select</div>
         </div>
       :
-      "Chat"
+      <Chat roomId={selectedRoomId}/>
     }
   </>
 
